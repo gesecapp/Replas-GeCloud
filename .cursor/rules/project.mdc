@@ -1,0 +1,70 @@
+---
+description: Regras do projeto FrontEnd-Architecture - convencoes, padroes e arquitetura
+globs: *
+alwaysApply: true
+---
+# Project Rules
+
+## Stack
+React 19 + Vite 7 + TanStack Router + TanStack Query + Zustand + ShadCN UI + TailwindCSS 4 + react-hook-form + zod + Biome
+
+## Regras Criticas
+
+- Use ShadCN UI (`src/components/ui`) - NUNCA tags HTML puras estilizadas
+- Usar Zustand com `persist` - NUNCA `localStorage.setItem` direto
+- PROIBIDO usar `.` para criar rotas aninhadas (ex: `edit.$id.tsx`)
+- NUNCA usar Card em componentes comuns - usar `Item`, `ItemTitle`, `ItemDescription`
+- NUNCA `mx-auto` no ChartContainer. Cores: `getChartColor(index)`
+- ANTES de criar hooks, verificar se ja existe em `src/hooks/`
+- Antes de commitar: `pnpm run format` e `pnpm run check`
+
+## Componentes Obrigatorios
+- `<DefaultEmptyData />`, `<DefaultLoading />`, `<DefaultFormLayout />`
+
+## Estrutura de Pagina
+```tsx
+<Card className="min-h-screen rounded-none border-none">
+  <CardHeader>
+    <CardTitle>TITULO DA PAGINA</CardTitle>
+    <CardAction>
+      {/* botoes de acao do header (ex: criar, exportar, logout) */}
+    </CardAction>
+  </CardHeader>
+  <CardContent>
+    {isLoading && <DefaultLoading />}
+    {!isLoading && isEmpty && <DefaultEmptyData />}
+    {!isLoading && !isEmpty && (
+      {/* conteudo da pagina */}
+    )}
+  </CardContent>
+  <CardFooter>
+    <TreeNavigation>
+  </CardFooter>
+</Card>
+```
+- `Card` sempre com `min-h-screen rounded-none border-none` nas paginas `_private`
+- `CardHeader`: `CardTitle` com nome da pagina + `CardAction` com botoes de acao
+- `CardContent`: renderizar `DefaultLoading` enquanto carrega, `DefaultEmptyData` quando vazio, conteudo quando pronto
+- `CardFooter`: posiciona os botoes de navegação, do compoentne `TreeNavigation` na parte de baixo da tela
+
+## Estrutura de Pastas da Rota
+```
+src/routes/_private/{module}/
+├── index.tsx, add.tsx, $id.tsx
+├── @components/, @consts/, @hooks/, @interface/, @utils/
+```
+
+## Documentacao Detalhada
+
+Para padroes detalhados com exemplos, consulte `docs/` conforme o cenario:
+- Nova feature / criar pastas: `docs/route-structure.md`, `docs/checklist.md`
+- Paginas de listagem ou formulario: `docs/page-patterns.md`
+- Hooks de API (TanStack Query): `docs/api-hooks.md`
+- Formularios (react-hook-form): `docs/form-hooks.md`
+- Schemas Zod, interfaces, consts: `docs/schemas-types.md`
+- Estado global (Zustand): `docs/state-management.md`
+- Padroes React e anti-patterns: `docs/react-patterns.md`
+- Graficos (Recharts, cores, tipos): `docs/charts.md`
+- Selects, hooks e componentes existentes: `docs/available-resources.md`
+- Máscaras e Funções de Utilidade (CPF, Tel, Data): `docs/masks.md`
+- Tech stack e versoes: `docs/stack.md`

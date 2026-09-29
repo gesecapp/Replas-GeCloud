@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Replas-G</string>
+    <string name="title_activity_main">Replas-G</string>
+    <string name="package_name">br.com.gecloud.replas</string>
+    <string name="custom_url_scheme">br.com.gecloud.replas</string>
+</resources>

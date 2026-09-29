@@ -1,0 +1,62 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+.env
+.env.prod
+.env.dev
+.env.intranet
+.lock
+
+debug.log*
+*-lock.json
+
+dist
+dist-ssr
+*.local
+*pnpm-store
+count.txt
+.nitro
+.tanstack
+.wrangler
+/iotlog-fronted
+iotlog-frontend/
+
+# assinatura e artefatos nativos (NUNCA versionar)
+*.jks
+*.keystore
+*.p12
+*.mobileprovision
+*.cer
+*.aab
+*.apk
+android/app/release/
+android/local.properties
+android/.gradle/
+ios/App/Pods/
+ios/DerivedData/
+
+# bundles web copiados pelo `cap sync` (regenerados)
+android/app/src/main/assets/public/
+ios/App/App/public/
+
+# configs locais do Android Studio (guardam alias de keystore e paths da maquina)
+android/.idea/
