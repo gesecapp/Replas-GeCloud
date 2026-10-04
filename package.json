@@ -1,6 +1,6 @@
 {
   "name": "replas-g",
-  "version": "1.0.0",
+  "version": "2.19.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -27,7 +27,7 @@
     "capgo:build:ios": "npx @capgo/cli@latest build request br.com.gecloud.replas --platform ios",
     "capgo:build:android": "npx @capgo/cli@latest build request br.com.gecloud.replas --platform android",
     "capgo:cred:save": "npx @capgo/cli@latest build credentials save",
-    "assets:generate": "npx @capacitor/assets generate --iconBackgroundColor '#0f172a' --iconBackgroundColorDark '#0f172a' --splashBackgroundColor '#0f172a' --splashBackgroundColorDark '#0f172a' && mv -f icons/*.webp public/icons/ && rmdir icons && sed -i '' 's|\"src\": \"../icons/|\"src\": \"/icons/|g' public/manifest.json"
+    "assets:generate": "./scripts/prepare-assets.sh && npx @capacitor/assets generate --iconBackgroundColor '#0f172a' --iconBackgroundColorDark '#0f172a' --splashBackgroundColor '#0f172a' --splashBackgroundColorDark '#0f172a' && mv -f icons/* public/icons/ && rmdir icons && sed -i '' 's|\"src\": \"../icons/|\"src\": \"/icons/|g' public/manifest.json"
   },
   "dependencies": {
     "@capacitor/android": "^8",

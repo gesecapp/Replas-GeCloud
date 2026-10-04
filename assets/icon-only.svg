@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-220 -220 1440 1440" width="1440" height="1440"><rect x="-220" y="-220" width="1440" height="1440" fill="#0f172a"/>
+  <style>
+    .cyan-blue { fill: #00AEEF; }
+  </style>
+  <g class="cyan-blue" transform="translate(500, 500)">
+    
+    <!-- 1. Círculo Central -->
+    <circle r="75" cx="0" cy="0" />
+
+    <!-- 2. Anel Interno (6 círculos) -->
+    <g id="ring-1">
+      <circle r="60" cx="0" cy="-140" />
+      <circle r="60" cx="121.2" cy="-70" />
+      <circle r="60" cx="121.2" cy="70" />
+      <circle r="60" cx="0" cy="140" />
+      <circle r="60" cx="-121.2" cy="70" />
+      <circle r="60" cx="-121.2" cy="-70" />
+    </g>
+
+    <!-- 3. Anel Intermediário (12 círculos) -->
+    <g id="ring-2">
+      <!-- 6 nos eixos principais -->
+      <circle r="48" cx="0" cy="-275" />
+      <circle r="48" cx="238.2" cy="-137.5" />
+      <circle r="48" cx="238.2" cy="137.5" />
+      <circle r="48" cx="0" cy="275" />
+      <circle r="48" cx="-238.2" cy="137.5" />
+      <circle r="48" cx="-238.2" cy="-137.5" />
+
+      <!-- 6 nos eixos intermediários -->
+      <circle r="48" cx="121.2" cy="-207.5" />
+      <circle r="48" cx="242.5" cy="0" />
+      <circle r="48" cx="121.2" cy="207.5" />
+      <circle r="48" cx="-121.2" cy="207.5" />
+      <circle r="48" cx="-242.5" cy="0" />
+      <circle r="48" cx="-121.2" cy="-207.5" />
+    </g>
+
+    <!-- 4. Pontas Externas (6 círculos menores) -->
+    <g id="ring-3-tips">
+      <circle r="36" cx="0" cy="-395" />
+      <circle r="36" cx="342.1" cy="-197.5" />
+      <circle r="36" cx="342.1" cy="197.5" />
+      <circle r="36" cx="0" cy="395" />
+      <circle r="36" cx="-342.1" cy="197.5" />
+      <circle r="36" cx="-342.1" cy="-197.5" />
+    </g>
+
+  </g>
+</svg>

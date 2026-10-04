@@ -114,9 +114,9 @@
   --sidebar-ring: oklch(0.708 0 0);
 
   /* Brand blues */
-  --skyBlue: hsl(195.59 100% 55%);
-  --primaryBlue: hsl(195.59 100% 44.51%); /* #00a8e3 - cor da marca Replas */
-  --darkBlue: hsl(195.59 100% 34%);
+  --skyBlue: hsl(196.32 100% 55%);
+  --primaryBlue: hsl(196.32 100% 46.86%); /* #00AEEF - cor da marca Replas */
+  --darkBlue: hsl(196.32 100% 34%);
 
   /* Font fallbacks */
   --font-fallback-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";

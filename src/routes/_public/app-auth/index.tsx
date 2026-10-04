@@ -15,7 +15,7 @@ function AppAuthPage() {
     <div className="flex min-h-screen items-center justify-center">
       <Card className="max-w-md! justify-center">
         <CardContent className="flex flex-col gap-6">
-          <img src="/images/logo.png" alt="Logo" className="h-26 w-auto object-contain" />
+          <img src="/images/logo.svg" alt="Logo" className="h-26 w-auto object-contain" />
           {isGuestMode ? <GuestArea onClose={() => setIsGuestMode(false)} /> : <AuthArea onGuestMode={() => setIsGuestMode(true)} />}
         </CardContent>
       </Card>

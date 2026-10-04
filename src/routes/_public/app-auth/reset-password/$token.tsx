@@ -80,7 +80,7 @@ function ResetPasswordPage() {
       <div className="flex min-h-screen items-center justify-center p-4">
         <Card className="max-w-md! justify-center">
           <CardContent className="flex flex-col gap-6">
-            <img src="/images/logo.png" alt="Logo" className="h-26 w-auto object-contain" />
+            <img src="/images/logo.svg" alt="Logo" className="h-26 w-auto object-contain" />
             <ItemGroup className="gap-6!">
               <ItemContent>
                 <ItemTitle className="text-2xl text-destructive">Link Inválido</ItemTitle>
@@ -101,7 +101,7 @@ function ResetPasswordPage() {
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="max-w-md! justify-center">
         <CardContent className="flex flex-col gap-6">
-          <img src="/images/logo.png" alt="Logo" className="h-26 w-auto object-contain" />
+          <img src="/images/logo.svg" alt="Logo" className="h-26 w-auto object-contain" />
 
           <ItemGroup className="gap-6!">
             <ItemContent>

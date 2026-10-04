@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { AlignLeft, Mail, ScanFace, Shield } from 'lucide-react';
+import { AlignLeft, Languages, Mail, ScanFace, Shield } from 'lucide-react';
+import type { ComponentType, ReactNode } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ItemTitle } from '@/components/ui/item';
@@ -9,21 +10,586 @@ export const Route = createFileRoute('/_public/privacy-policy/')({
   component: PrivacyPolicyPage,
 });
 
-const tocSections = [
-  { id: 'section-privacy', label: 'Privacidade e Coleta' },
-  { id: 'section-face-data', label: 'Dados Faciais (Face Data)' },
-  { id: 'section-data', label: 'Retenção e Compartilhamento' },
-  { id: 'section-rights', label: 'Seus Direitos' },
-  { id: 'section-adsense', label: 'Google AdSense' },
-  { id: 'section-commitment', label: 'Compromisso do Usuário' },
-  { id: 'section-terms', label: 'Termos de Serviço' },
-  { id: 'section-legal', label: 'Limitações e Lei' },
-  { id: 'section-actions', label: 'Exclusão de Dados' },
+type Locale = 'en' | 'pt';
+
+// Ingles e o padrao: esta pagina e o documento que a App Review da Apple consulta,
+// e o revisor precisa conseguir ler a secao de dados faciais sem tradutor.
+const DEFAULT_LOCALE: Locale = 'en';
+
+type Localized<T> = Record<Locale, T>;
+
+const chrome: Localized<{
+  title: string;
+  subtitle: string;
+  dates: string;
+  onThisPage: string;
+  switchLabel: string;
+  deletionHeading: string;
+  deletionToc: string;
+  cta: string;
+}> = {
+  en: {
+    title: 'Privacy Policy',
+    subtitle: 'Your privacy matters to us. Learn how we handle your personal data.',
+    dates: 'Effective as of October 30, 2023 · Last updated on September 29, 2026',
+    onThisPage: 'On this page',
+    switchLabel: 'Ver em português',
+    deletionHeading: 'Data Deletion',
+    deletionToc: 'Data Deletion',
+    cta: 'Request Deletion',
+  },
+  pt: {
+    title: 'Política de Privacidade',
+    subtitle: 'A sua privacidade é importante para nós. Conheça como tratamos seus dados pessoais.',
+    dates: 'Efetiva a partir de 30 de outubro de 2023 · Última atualização em 29 de setembro de 2026',
+    onThisPage: 'Nesta página',
+    switchLabel: 'View in English',
+    deletionHeading: 'Exclusão de Dados',
+    deletionToc: 'Exclusão de Dados',
+    cta: 'Solicitar Exclusão',
+  },
+};
+
+const DELETION_EMAIL = 'gesec@gesec.com.br';
+
+type Section = {
+  id: string;
+  toc: Localized<string>;
+  heading: Localized<string>;
+  body: Localized<ReactNode>;
+};
+
+const sections: Section[] = [
+  {
+    id: 'section-privacy',
+    toc: { en: 'Privacy and Collection', pt: 'Privacidade e Coleta' },
+    heading: { en: 'Privacy and Information Collection', pt: 'Privacidade e Coleta de Informações' },
+    body: {
+      en: (
+        <>
+          <p>
+            Your privacy matters to us. It is Gesec&rsquo;s policy to respect your privacy regarding any information we may collect on the Gesec site and other sites we own and
+            operate.
+          </p>
+          <p>
+            We only request personal information when we genuinely need it to provide you with a service. We do so by fair and lawful means, with your knowledge and consent. We
+            also tell you why we are collecting it and how it will be used.
+          </p>
+        </>
+      ),
+      pt: (
+        <>
+          <p>
+            A sua privacidade é importante para nós. É política da Gesec respeitar a sua privacidade em relação a qualquer informação sua que possamos coletar no site Gesec, e
+            outros sites que possuímos e operamos.
+          </p>
+          <p>
+            Solicitamos informações pessoais apenas quando realmente precisamos delas para lhe fornecer um serviço. Fazemo-lo por meios justos e legais, com o seu conhecimento e
+            consentimento. Também informamos por que estamos coletando e como será usado.
+          </p>
+        </>
+      ),
+    },
+  },
+  {
+    id: 'section-face-data',
+    toc: { en: 'Face Data', pt: 'Dados Faciais (Face Data)' },
+    heading: { en: 'Face Data', pt: 'Dados Faciais (Face Data)' },
+    body: {
+      en: (
+        <>
+          <p>
+            The app captures a photograph of your face for a single purpose: to identify you at the physical access-control equipment (turnstiles, face readers and entrance gates)
+            of the venue you are authorized to enter. We do not use this image for any other purpose, we do not sell it, and we do not share it with third parties for advertising,
+            marketing, analytics or the training of artificial intelligence models.
+          </p>
+
+          <h3>1. What face data is collected</h3>
+          <ul>
+            <li>
+              <strong>A two-dimensional (2D) photograph of your face</strong>, captured with the device camera or selected by you from the photo library. The image is stored as a
+              compressed JPEG, at most 1024 pixels on its longest side. It is the only face data that leaves your device.
+            </li>
+            <li>
+              <strong>A framing check, processed only on your device.</strong> While the capture screen is open, the app identifies the approximate position of the face in the
+              image (a bounding box) and measures the lighting level, solely to display on-screen guidance such as &ldquo;center your face&rdquo; or &ldquo;low light&rdquo;. These
+              values exist only in the app&rsquo;s volatile memory, <strong>are never written to disk nor transmitted over the network</strong>, and are discarded as soon as the
+              capture screen is closed.
+            </li>
+          </ul>
+          <p>
+            <strong>We do not collect</strong> three-dimensional facial mesh or mapping, depth maps, facial geometry, landmark measurements, facial expressions, estimates of
+            emotion, age, gender or ethnicity, nor biometric templates generated on the device. The app{' '}
+            <strong>does not use ARKit, the TrueDepth camera sensor, Apple&rsquo;s Face ID</strong> or any Apple face-recognition or face-tracking framework.
+          </p>
+
+          <h3>2. How face data is used</h3>
+          <p>The facial photograph is used exclusively for identification in physical access control, specifically to:</p>
+          <ul>
+            <li>form part of your access record with the organization that administers the venue;</li>
+            <li>
+              be sent to the access-control equipment installed at the venue, which compares the registered image with the image captured as you pass through, in order to grant or
+              deny entry;
+            </li>
+            <li>allow the person responsible for venue security to visually confirm your identity in an access log.</li>
+          </ul>
+          <p>
+            The photograph is <strong>not</strong> used for filters, avatars, visual effects, advertising, behavioral profiling, emotion or demographic analysis, nor to train
+            artificial intelligence or machine learning models.
+          </p>
+
+          <h3>3. Where face data is stored</h3>
+          <ul>
+            <li>
+              In our object storage service, transmitted over encrypted channels (HTTPS/TLS), with access restricted by credentials and by logical segregation between client
+              organizations. Our database stores only the reference to the file, associated with your record &mdash; never the image itself.
+            </li>
+            <li>
+              On the access-control equipment physically installed at the venue, within the network of the organization that administers that venue, because the equipment needs the
+              image locally to perform validation at the moment of entry.
+            </li>
+          </ul>
+
+          <h3>4. Sharing with third parties</h3>
+          <p>
+            <strong>We do not sell, rent, assign, license or disclose face data.</strong> No face data is shared with advertisers, data brokers, social networks, analytics tools or
+            any third party for that third party&rsquo;s own purposes. The facial photograph is transmitted only to:
+          </p>
+          <ul>
+            <li>
+              <strong>the organization that administers the access venue</strong> (condominium, building, educational institution or company), which is the controller of your data
+              and from whom you requested entry authorization;
+            </li>
+            <li>
+              <strong>the access-control equipment of that same venue</strong>, which requires the image to perform entry validation;
+            </li>
+            <li>
+              <strong>the cloud storage infrastructure provider</strong> that hosts our servers, strictly as a processor, contractually barred from accessing, using or disclosing
+              the data for any purpose of its own.
+            </li>
+          </ul>
+          <p>
+            <strong>
+              Any third party with whom we share face data is contractually required to provide the same or equal protection of that face data as stated in this Privacy Policy.
+            </strong>{' '}
+            This applies to the organization administering the access venue, to that venue&rsquo;s access-control equipment, and to the cloud storage provider. None of them is
+            authorized to use, retain, disclose or process face data for any purpose other than access-control identification, nor for longer than the period set out in section 5,
+            and all of them must apply the same security measures, the same retention limits and the same deletion rules established here.
+          </p>
+          <p>Disclosure to public authorities occurs only under a court order or an express legal obligation.</p>
+
+          <h3>5. How long face data is retained</h3>
+          <ul>
+            <li>The photograph is kept for as long as your relationship with the venue or your access authorization remains active.</li>
+            <li>
+              Once the relationship ends &mdash; through termination, departure, cancellation of the record or expiry of a visitor authorization &mdash; or once you request
+              deletion, the image is <strong>erased within 5 (five) calendar days</strong>, from both our storage servers and the access-control equipment.
+            </li>
+            <li>If you replace your photograph with another, the previous image is deleted from storage immediately upon replacement.</li>
+            <li>Deletion covers both the stored image file and the corresponding reference in our database.</li>
+          </ul>
+
+          <h3>6. Consent, refusal and your rights</h3>
+          <ul>
+            <li>
+              Capture occurs only after you expressly authorize camera access through the device operating system and confirm submission of the photograph. No image is captured in
+              the background or without your direct action.
+            </li>
+            <li>
+              You may refuse to provide the photograph. In that case, identification by facial recognition will not be available, and the organization responsible for the venue may
+              offer alternative means of access.
+            </li>
+            <li>
+              You may withdraw your consent and request deletion of your face data at any time, free of charge, within the app itself or by e-mail at{' '}
+              <a href={`mailto:${DELETION_EMAIL}?subject=${encodeURIComponent('Face Data Deletion Request')}`}>{DELETION_EMAIL}</a>.
+            </li>
+            <li>For minors, the photograph is only collected with the consent of at least one parent or legal guardian.</li>
+          </ul>
+          <p>
+            The processing of face data, as sensitive biometric personal data, complies with the Brazilian General Data Protection Law (Lei nº 13.709/2018), on the legal basis of
+            the specific and highlighted consent of the data subject, under article 11, item I.
+          </p>
+        </>
+      ),
+      pt: (
+        <>
+          <p>
+            O aplicativo captura uma fotografia do seu rosto com uma finalidade única: identificar você nos equipamentos de controle de acesso físico (catracas, leitoras faciais e
+            portarias) do local em que você está autorizado a entrar. Não utilizamos essa imagem para nenhuma outra finalidade, não a vendemos e não a compartilhamos com terceiros
+            para publicidade, marketing, analytics ou treinamento de modelos de inteligência artificial.
+          </p>
+
+          <h3>1. Quais dados faciais são coletados</h3>
+          <ul>
+            <li>
+              <strong>Fotografia bidimensional (2D) do rosto</strong>, capturada pela câmera do dispositivo ou selecionada por você na galeria de fotos. A imagem é gravada em
+              formato JPEG comprimido, com no máximo 1024 pixels de lado. É o único dado facial que sai do seu dispositivo.
+            </li>
+            <li>
+              <strong>Verificação de enquadramento, processada apenas no seu dispositivo.</strong> Enquanto a tela de captura está aberta, o aplicativo identifica a posição
+              aproximada do rosto na imagem (um retângulo delimitador) e mede o nível de iluminação, exclusivamente para exibir orientações na tela, como &ldquo;centralize a
+              face&rdquo; ou &ldquo;iluminação baixa&rdquo;. Esses valores existem somente na memória volátil do aplicativo,{' '}
+              <strong>nunca são gravados em disco nem transmitidos pela rede</strong>, e são descartados assim que a tela de captura é fechada.
+            </li>
+          </ul>
+          <p>
+            <strong>Não coletamos</strong> malha ou mapeamento facial tridimensional, mapa de profundidade, geometria facial, medidas de pontos de referência (landmarks),
+            expressões faciais, estimativas de emoção, idade, gênero ou etnia, nem templates biométricos gerados no dispositivo. O aplicativo{' '}
+            <strong>não utiliza ARKit, o sensor de câmera TrueDepth, o Face ID da Apple</strong> nem qualquer framework de reconhecimento ou rastreamento facial da Apple.
+          </p>
+
+          <h3>2. Como os dados faciais são utilizados</h3>
+          <p>A fotografia do rosto é usada exclusivamente para identificação em controle de acesso físico, especificamente para:</p>
+          <ul>
+            <li>compor o seu cadastro de acesso junto à organização que administra o local;</li>
+            <li>
+              ser enviada aos equipamentos de controle de acesso instalados no local, que comparam a imagem cadastrada com a imagem captada no momento da sua passagem, a fim de
+              liberar ou negar a entrada;
+            </li>
+            <li>permitir que o responsável pela segurança do local confirme visualmente a sua identidade em um registro de acesso.</li>
+          </ul>
+          <p>
+            A fotografia <strong>não</strong> é utilizada para filtros, avatares, efeitos visuais, publicidade, perfilamento comportamental, análise de emoções ou características
+            demográficas, nem para treinar modelos de inteligência artificial ou aprendizado de máquina.
+          </p>
+
+          <h3>3. Onde os dados faciais são armazenados</h3>
+          <ul>
+            <li>
+              Em nosso serviço de armazenamento de objetos, com transmissão criptografada (HTTPS/TLS) e acesso restrito por credenciais e por segregação lógica entre organizações
+              clientes. O nosso banco de dados guarda apenas a referência ao arquivo, associada ao seu cadastro — nunca a imagem em si.
+            </li>
+            <li>
+              Nos próprios equipamentos de controle de acesso instalados fisicamente no local, dentro da rede da organização que administra aquele local, porque o equipamento
+              precisa da imagem localmente para realizar a validação no momento da passagem.
+            </li>
+          </ul>
+
+          <h3>4. Compartilhamento com terceiros</h3>
+          <p>
+            <strong>Não vendemos, alugamos, cedemos, licenciamos nem divulgamos dados faciais.</strong> Nenhum dado facial é compartilhado com anunciantes, corretores de dados,
+            redes sociais, ferramentas de analytics ou qualquer terceiro para finalidade própria desse terceiro. A fotografia do rosto é transmitida somente para:
+          </p>
+          <ul>
+            <li>
+              <strong>a organização que administra o local de acesso</strong> (condomínio, edifício, instituição de ensino ou empresa), que é a controladora dos seus dados e a quem
+              você solicitou autorização de entrada;
+            </li>
+            <li>
+              <strong>os equipamentos de controle de acesso desse mesmo local</strong>, que necessitam da imagem para executar a validação de entrada;
+            </li>
+            <li>
+              <strong>o provedor de infraestrutura de armazenamento em nuvem</strong> que hospeda nossos servidores, na estrita condição de operador, contratualmente impedido de
+              acessar, utilizar ou divulgar os dados para qualquer finalidade própria.
+            </li>
+          </ul>
+          <p>
+            <strong>
+              Todo terceiro com quem compartilhamos dados faciais está obrigado, por contrato, a conferir a esses dados proteção igual ou equivalente à descrita nesta Política de
+              Privacidade.
+            </strong>{' '}
+            Isso vale para a organização que administra o local de acesso, para os equipamentos de controle de acesso desse local e para o provedor de armazenamento em nuvem.
+            Nenhum deles está autorizado a utilizar, reter, divulgar ou tratar os dados faciais para finalidade diversa da identificação no controle de acesso, nem por prazo
+            superior ao previsto na seção 5, e todos devem aplicar as mesmas medidas de segurança, os mesmos limites de retenção e as mesmas regras de exclusão aqui estabelecidas.
+          </p>
+          <p>Divulgação a autoridades públicas ocorre apenas mediante ordem judicial ou obrigação legal expressa.</p>
+
+          <h3>5. Por quanto tempo os dados faciais são retidos</h3>
+          <ul>
+            <li>A fotografia é mantida enquanto durar o seu vínculo ou a sua autorização de acesso ao local.</li>
+            <li>
+              Encerrado o vínculo — por desligamento, saída, cancelamento do cadastro ou expiração da autorização de visita — ou solicitada a exclusão por você, a imagem é
+              <strong> eliminada em até 5 (cinco) dias corridos</strong>, tanto dos nossos servidores de armazenamento quanto dos equipamentos de controle de acesso.
+            </li>
+            <li>Caso você substitua a sua fotografia por outra, a imagem anterior é apagada imediatamente do armazenamento no momento da substituição.</li>
+            <li>A exclusão abrange o arquivo de imagem armazenado e a referência correspondente no nosso banco de dados.</li>
+          </ul>
+
+          <h3>6. Consentimento, recusa e seus direitos</h3>
+          <ul>
+            <li>
+              A captura só ocorre depois que você autoriza expressamente o acesso à câmera pelo sistema operacional do dispositivo e confirma o envio da fotografia. Nenhuma imagem
+              é capturada em segundo plano ou sem a sua ação direta.
+            </li>
+            <li>
+              Você pode recusar o fornecimento da fotografia. Nesse caso, a identificação por reconhecimento facial não estará disponível, e a organização responsável pelo local
+              poderá oferecer meios alternativos de acesso.
+            </li>
+            <li>
+              Você pode revogar o consentimento e solicitar a exclusão dos seus dados faciais a qualquer momento, sem custo, pelo próprio aplicativo ou pelo e-mail{' '}
+              <a href={`mailto:${DELETION_EMAIL}?subject=${encodeURIComponent('Solicitação de Exclusão de Dados Faciais')}`}>{DELETION_EMAIL}</a>.
+            </li>
+            <li>No caso de menores de idade, a fotografia só é coletada mediante consentimento de pelo menos um dos pais ou do responsável legal.</li>
+          </ul>
+          <p>
+            O tratamento de dados faciais, na qualidade de dado pessoal sensível biométrico, observa a Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018), tendo como base
+            legal o consentimento específico e destacado do titular, nos termos do artigo 11, inciso I.
+          </p>
+        </>
+      ),
+    },
+  },
+  {
+    id: 'section-data',
+    toc: { en: 'Retention and Sharing', pt: 'Retenção e Compartilhamento' },
+    heading: { en: 'Retention and Sharing', pt: 'Retenção e Compartilhamento' },
+    body: {
+      en: (
+        <>
+          <p>
+            We retain the information we collect only for as long as necessary to provide the requested service. When we store data, we protect it within commercially acceptable
+            means to prevent loss and theft, as well as unauthorized access, disclosure, copying, use or modification.
+          </p>
+          <p>We do not share personally identifiable information publicly or with third parties, except when required by law.</p>
+          <p>
+            Our site may contain links to external sites that we do not operate. Please be aware that we have no control over the content and practices of those sites and cannot
+            accept responsibility for their respective privacy policies.
+          </p>
+        </>
+      ),
+      pt: (
+        <>
+          <p>
+            Apenas retemos as informações coletadas pelo tempo necessário para fornecer o serviço solicitado. Quando armazenamos dados, protegemos dentro de meios comercialmente
+            aceitáveis para evitar perdas e roubos, bem como acesso, divulgação, cópia, uso ou modificação não autorizados.
+          </p>
+          <p>Não compartilhamos informações de identificação pessoal publicamente ou com terceiros, exceto quando exigido por lei.</p>
+          <p>
+            O nosso site pode ter links para sites externos que não são operados por nós. Esteja ciente de que não temos controle sobre o conteúdo e práticas desses sites e não
+            podemos aceitar responsabilidade por suas respectivas políticas de privacidade.
+          </p>
+        </>
+      ),
+    },
+  },
+  {
+    id: 'section-rights',
+    toc: { en: 'Your Rights', pt: 'Seus Direitos' },
+    heading: { en: 'Your Rights', pt: 'Seus Direitos' },
+    body: {
+      en: (
+        <>
+          <p>You are free to refuse our request for personal information, with the understanding that we may not be able to provide some of the services you want.</p>
+          <p>
+            Continued use of our site will be regarded as acceptance of our practices around privacy and personal information. If you have any question about how we handle user
+            data and personal information, please contact us.
+          </p>
+        </>
+      ),
+      pt: (
+        <>
+          <p>Você é livre para recusar a nossa solicitação de informações pessoais, entendendo que talvez não possamos fornecer alguns dos serviços desejados.</p>
+          <p>
+            O uso continuado de nosso site será considerado como aceitação de nossas práticas em torno de privacidade e informações pessoais. Se você tiver alguma dúvida sobre como
+            lidamos com dados do usuário e informações pessoais, entre em contato conosco.
+          </p>
+        </>
+      ),
+    },
+  },
+  {
+    id: 'section-adsense',
+    toc: { en: 'Google AdSense', pt: 'Google AdSense' },
+    heading: { en: 'Google AdSense', pt: 'Google AdSense' },
+    body: {
+      en: (
+        <>
+          <p>
+            The Google AdSense service we use to serve advertising uses a DoubleClick cookie to serve more relevant ads across the web and to limit the number of times a given ad
+            is shown to you. For more information, see the official Google AdSense privacy FAQs.
+          </p>
+          <p>
+            We use advertising to offset the running costs of this site and to fund future development. The behavioral advertising cookies used by this site are designed to ensure
+            you are served the most relevant ads wherever possible.
+          </p>
+          <p>
+            Several partners advertise on our behalf, and affiliate tracking cookies simply allow us to see whether our customers reached the site through one of our partner sites,
+            so that we can credit them appropriately and, where applicable, allow our affiliate partners to offer promotions.
+          </p>
+        </>
+      ),
+      pt: (
+        <>
+          <p>
+            O serviço Google AdSense que usamos para veicular publicidade usa um cookie DoubleClick para veicular anúncios mais relevantes em toda a Web e limitar o número de vezes
+            que um determinado anúncio é exibido para você. Para mais informações, consulte as FAQs oficiais sobre privacidade do Google AdSense.
+          </p>
+          <p>
+            Utilizamos anúncios para compensar os custos de funcionamento deste site e fornecer financiamento para futuros desenvolvimentos. Os cookies de publicidade
+            comportamental usados por este site foram projetados para garantir que você forneça os anúncios mais relevantes sempre que possível.
+          </p>
+          <p>
+            Vários parceiros anunciam em nosso nome e os cookies de rastreamento de afiliados simplesmente nos permitem ver se nossos clientes acessaram o site através de um dos
+            sites de nossos parceiros, para que possamos creditá-los adequadamente e, quando aplicável, permitir que nossos parceiros afiliados ofereçam promoções.
+          </p>
+        </>
+      ),
+    },
+  },
+  {
+    id: 'section-commitment',
+    toc: { en: 'User Commitment', pt: 'Compromisso do Usuário' },
+    heading: { en: 'User Commitment', pt: 'Compromisso do Usuário' },
+    body: {
+      en: (
+        <>
+          <p>The user undertakes to make appropriate use of the content and information that Gesec offers:</p>
+          <ul>
+            <li>Not to engage in activities that are illegal or contrary to good faith and public order;</li>
+            <li>Not to distribute propaganda or content of a racist or xenophobic nature, illegal pornography, apologia for terrorism, or material against human rights;</li>
+            <li>
+              Not to cause damage to the physical and logical systems of Gesec, its suppliers or third parties, nor to introduce or spread computer viruses or any other systems
+              capable of causing damage.
+            </li>
+          </ul>
+        </>
+      ),
+      pt: (
+        <>
+          <p>O usuário se compromete a fazer uso adequado dos conteúdos e da informação que a Gesec oferece:</p>
+          <ul>
+            <li>Não se envolver em atividades ilegais ou contrárias à boa fé e à ordem pública;</li>
+            <li>Não difundir propaganda ou conteúdo de natureza racista, xenofóbica, pornografia ilegal, apologia ao terrorismo ou contra os direitos humanos;</li>
+            <li>
+              Não causar danos aos sistemas físicos e lógicos do Gesec, de seus fornecedores ou terceiros, para introduzir ou disseminar vírus informáticos ou quaisquer outros
+              sistemas capazes de causar danos.
+            </li>
+          </ul>
+        </>
+      ),
+    },
+  },
+  {
+    id: 'section-terms',
+    toc: { en: 'Terms of Service', pt: 'Termos de Serviço' },
+    heading: { en: 'Terms of Service', pt: 'Termos de Serviço' },
+    body: {
+      en: (
+        <>
+          <p>
+            By accessing the Gesec site, you agree to comply with these terms of service and all applicable laws and regulations, and you agree that you are responsible for
+            compliance with all applicable local laws. If you do not agree with any of these terms, you are prohibited from using or accessing this site.
+          </p>
+          <p>
+            Permission is granted to temporarily download one copy of the materials on the Gesec site, for personal, non-commercial transitory viewing only. This is the grant of a
+            license, not a transfer of title. Under this license you may not:
+          </p>
+          <ul>
+            <li>Modify or copy the materials;</li>
+            <li>Use the materials for any commercial purpose or for public display;</li>
+            <li>Attempt to decompile or reverse engineer any software;</li>
+            <li>Remove any copyright or other proprietary notations;</li>
+            <li>Transfer the materials to another person or mirror them on any other server.</li>
+          </ul>
+        </>
+      ),
+      pt: (
+        <>
+          <p>
+            Ao acessar ao site Gesec, concorda em cumprir estes termos de serviço, todas as leis e regulamentos aplicáveis e concorda que é responsável pelo cumprimento de todas as
+            leis locais aplicáveis. Se você não concordar com algum desses termos, está proibido de usar ou acessar este site.
+          </p>
+          <p>
+            É concedida permissão para baixar temporariamente uma cópia dos materiais no site Gesec, apenas para visualização transitória pessoal e não comercial. Esta é a
+            concessão de uma licença, não uma transferência de título. Sob esta licença, você não pode:
+          </p>
+          <ul>
+            <li>Modificar ou copiar os materiais;</li>
+            <li>Usar os materiais para qualquer finalidade comercial ou para exibição pública;</li>
+            <li>Tentar descompilar ou fazer engenharia reversa de qualquer software;</li>
+            <li>Remover quaisquer direitos autorais ou outras notações de propriedade;</li>
+            <li>Transferir os materiais para outra pessoa ou espelhar em qualquer outro servidor.</li>
+          </ul>
+        </>
+      ),
+    },
+  },
+  {
+    id: 'section-legal',
+    toc: { en: 'Limitations and Law', pt: 'Limitações e Lei' },
+    heading: { en: 'Limitations and Governing Law', pt: 'Limitações e Lei Aplicável' },
+    body: {
+      en: (
+        <>
+          <p>
+            The materials on the Gesec site are provided &ldquo;as is&rdquo;. Gesec makes no warranties, expressed or implied, and hereby disclaims and negates all other
+            warranties, including implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property.
+          </p>
+          <p>
+            In no event shall Gesec or its suppliers be liable for any damages arising out of the use or inability to use the materials on Gesec, even if notified of the
+            possibility of such damages.
+          </p>
+          <p>
+            Gesec may revise these terms of service at any time without notice. These terms are governed by and construed in accordance with the laws applicable to Gesec, and you
+            irrevocably submit to the exclusive jurisdiction of the courts in that state or locality.
+          </p>
+        </>
+      ),
+      pt: (
+        <>
+          <p>
+            Os materiais no site da Gesec são fornecidos &ldquo;como estão&rdquo;. Gesec não oferece garantias, expressas ou implícitas, e por este meio isenta e nega todas as
+            outras garantias, incluindo garantias implícitas ou condições de comercialização, adequação a um fim específico ou não violação de propriedade intelectual.
+          </p>
+          <p>
+            Em nenhum caso a Gesec ou seus fornecedores serão responsáveis por quaisquer danos decorrentes do uso ou da incapacidade de usar os materiais em Gesec, mesmo que tenha
+            sido notificado da possibilidade de tais danos.
+          </p>
+          <p>
+            A Gesec pode revisar estes termos de serviço a qualquer momento, sem aviso prévio. Estes termos são regidos e interpretados de acordo com as leis da Gesec e você se
+            submete irrevogavelmente à jurisdição exclusiva dos tribunais naquele estado ou localidade.
+          </p>
+        </>
+      ),
+    },
+  },
+];
+
+const deletionCards: {
+  icon: ComponentType<{ className?: string }>;
+  title: Localized<string>;
+  description: Localized<string>;
+  subject: Localized<string>;
+}[] = [
+  {
+    icon: ScanFace,
+    title: { en: 'Request Face Data Deletion', pt: 'Solicitar Exclusão de Dados Faciais' },
+    description: {
+      en: 'Withdraw your consent and request deletion of your facial photograph from our servers and from the access-control equipment, within 5 calendar days.',
+      pt: 'Revogue o consentimento e solicite a exclusão da sua fotografia facial dos nossos servidores e dos equipamentos de controle de acesso, em até 5 dias corridos.',
+    },
+    subject: { en: 'Face Data Deletion Request', pt: 'Solicitação de Exclusão de Dados Faciais' },
+  },
+  {
+    icon: Shield,
+    title: { en: 'Request Account Deletion', pt: 'Solicitar Exclusão de Conta' },
+    description: {
+      en: 'Request permanent deletion of your account and all associated data.',
+      pt: 'Solicite a exclusão permanente de sua conta e todos os dados associados.',
+    },
+    subject: { en: 'Account Deletion Request', pt: 'Solicitação de Exclusão de Conta' },
+  },
+  {
+    icon: Shield,
+    title: { en: 'Request Data Deletion', pt: 'Solicitar Exclusão de Dados' },
+    description: {
+      en: 'Request deletion of your data while keeping your account active.',
+      pt: 'Solicite a exclusão dos seus dados enquanto mantém sua conta ativa.',
+    },
+    subject: { en: 'Data Deletion Request', pt: 'Solicitação de Exclusão de Dados' },
+  },
 ];
 
 function PrivacyPolicyPage() {
+  const [locale, setLocale] = useState<Locale>(DEFAULT_LOCALE);
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const sectionRefs = useRef<Record<string, HTMLElement>>({});
+
+  // O documento e servido como pt-BR no index.html; sem isso, leitores de tela e
+  // tradutores automaticos tratariam o texto em ingles como se fosse portugues.
+  useEffect(() => {
+    document.documentElement.lang = locale === 'en' ? 'en' : 'pt-BR';
+  }, [locale]);
 
   useEffect(() => {
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
@@ -54,285 +620,57 @@ function PrivacyPolicyPage() {
     if (ref) sectionRefs.current[id] = ref;
   };
 
+  const t = chrome[locale];
+  const tocEntries = [...sections.map(({ id, toc }) => ({ id, label: toc[locale] })), { id: 'section-actions', label: t.deletionToc }];
+
   return (
     <section className="py-32">
       <div className="container max-w-7xl">
         <div className="relative grid-cols-3 gap-20 lg:grid">
           <div className="lg:col-span-2">
             <div className="mb-12">
-              <h1 className="font-extrabold text-3xl">Política de Privacidade</h1>
-              <p className="mt-2 text-lg text-muted-foreground">A sua privacidade é importante para nós. Conheça como tratamos seus dados pessoais.</p>
-              <p className="mt-1 text-muted-foreground text-xs">Efetiva a partir de 30 de outubro de 2023 &middot; Última atualização em 30 de agosto de 2026</p>
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <h1 className="font-extrabold text-3xl">{t.title}</h1>
+                <Button variant="outline" size="sm" onClick={() => setLocale(locale === 'en' ? 'pt' : 'en')}>
+                  <Languages className="size-4" />
+                  {t.switchLabel}
+                </Button>
+              </div>
+              <p className="mt-2 text-lg text-muted-foreground">{t.subtitle}</p>
+              <p className="mt-1 text-muted-foreground text-xs">{t.dates}</p>
             </div>
 
-            <section id="section-privacy" ref={(ref) => addSectionRef('section-privacy', ref)} className="prose dark:prose-invert mb-8">
-              <ItemTitle className="text-2xl">Privacidade e Coleta de Informações</ItemTitle>
-              <p>
-                A sua privacidade é importante para nós. É política da Gesec respeitar a sua privacidade em relação a qualquer informação sua que possamos coletar no site Gesec, e
-                outros sites que possuímos e operamos.
-              </p>
-              <p>
-                Solicitamos informações pessoais apenas quando realmente precisamos delas para lhe fornecer um serviço. Fazemo-lo por meios justos e legais, com o seu conhecimento
-                e consentimento. Também informamos por que estamos coletando e como será usado.
-              </p>
-            </section>
-
-            <section id="section-face-data" ref={(ref) => addSectionRef('section-face-data', ref)} className="prose dark:prose-invert mb-8">
-              <ItemTitle className="text-2xl">Dados Faciais (Face Data)</ItemTitle>
-              <p>
-                O aplicativo captura uma fotografia do seu rosto com uma finalidade única: identificar você nos equipamentos de controle de acesso físico (catracas, leitoras
-                faciais e portarias) do local em que você está autorizado a entrar. Não utilizamos essa imagem para nenhuma outra finalidade, não a vendemos e não a compartilhamos
-                com terceiros para publicidade, marketing, analytics ou treinamento de modelos de inteligência artificial.
-              </p>
-
-              <h3>1. Quais dados faciais são coletados</h3>
-              <ul>
-                <li>
-                  <strong>Fotografia bidimensional (2D) do rosto</strong>, capturada pela câmera do dispositivo ou selecionada por você na galeria de fotos. A imagem é gravada em
-                  formato JPEG comprimido, com no máximo 1024 pixels de lado. É o único dado facial que sai do seu dispositivo.
-                </li>
-                <li>
-                  <strong>Verificação de enquadramento, processada apenas no seu dispositivo.</strong> Enquanto a tela de captura está aberta, o aplicativo identifica a posição
-                  aproximada do rosto na imagem (um retângulo delimitador) e mede o nível de iluminação, exclusivamente para exibir orientações na tela, como &ldquo;centralize a
-                  face&rdquo; ou &ldquo;iluminação baixa&rdquo;. Esses valores existem somente na memória volátil do aplicativo,{' '}
-                  <strong>nunca são gravados em disco nem transmitidos pela rede</strong>, e são descartados assim que a tela de captura é fechada.
-                </li>
-              </ul>
-              <p>
-                <strong>Não coletamos</strong> malha ou mapeamento facial tridimensional, mapa de profundidade, geometria facial, medidas de pontos de referência (landmarks),
-                expressões faciais, estimativas de emoção, idade, gênero ou etnia, nem templates biométricos gerados no dispositivo. O aplicativo{' '}
-                <strong>não utiliza ARKit, o sensor de câmera TrueDepth, o Face ID da Apple</strong> nem qualquer framework de reconhecimento ou rastreamento facial da Apple.
-              </p>
-
-              <h3>2. Como os dados faciais são utilizados</h3>
-              <p>A fotografia do rosto é usada exclusivamente para identificação em controle de acesso físico, especificamente para:</p>
-              <ul>
-                <li>compor o seu cadastro de acesso junto à organização que administra o local;</li>
-                <li>
-                  ser enviada aos equipamentos de controle de acesso instalados no local, que comparam a imagem cadastrada com a imagem captada no momento da sua passagem, a fim de
-                  liberar ou negar a entrada;
-                </li>
-                <li>permitir que o responsável pela segurança do local confirme visualmente a sua identidade em um registro de acesso.</li>
-              </ul>
-              <p>
-                A fotografia <strong>não</strong> é utilizada para filtros, avatares, efeitos visuais, publicidade, perfilamento comportamental, análise de emoções ou
-                características demográficas, nem para treinar modelos de inteligência artificial ou aprendizado de máquina.
-              </p>
-
-              <h3>3. Onde os dados faciais são armazenados</h3>
-              <ul>
-                <li>
-                  Em nosso serviço de armazenamento de objetos, com transmissão criptografada (HTTPS/TLS) e acesso restrito por credenciais e por segregação lógica entre
-                  organizações clientes. O nosso banco de dados guarda apenas a referência ao arquivo, associada ao seu cadastro — nunca a imagem em si.
-                </li>
-                <li>
-                  Nos próprios equipamentos de controle de acesso instalados fisicamente no local, dentro da rede da organização que administra aquele local, porque o equipamento
-                  precisa da imagem localmente para realizar a validação no momento da passagem.
-                </li>
-              </ul>
-
-              <h3>4. Compartilhamento com terceiros</h3>
-              <p>
-                <strong>Não vendemos, alugamos, cedemos, licenciamos nem divulgamos dados faciais.</strong> Nenhum dado facial é compartilhado com anunciantes, corretores de dados,
-                redes sociais, ferramentas de analytics ou qualquer terceiro para finalidade própria desse terceiro. A fotografia do rosto é transmitida somente para:
-              </p>
-              <ul>
-                <li>
-                  <strong>a organização que administra o local de acesso</strong> (condomínio, edifício, instituição de ensino ou empresa), que é a controladora dos seus dados e a
-                  quem você solicitou autorização de entrada;
-                </li>
-                <li>
-                  <strong>os equipamentos de controle de acesso desse mesmo local</strong>, que necessitam da imagem para executar a validação de entrada;
-                </li>
-                <li>
-                  <strong>o provedor de infraestrutura de armazenamento em nuvem</strong> que hospeda nossos servidores, na estrita condição de operador, contratualmente impedido
-                  de acessar, utilizar ou divulgar os dados para qualquer finalidade própria.
-                </li>
-              </ul>
-              <p>Divulgação a autoridades públicas ocorre apenas mediante ordem judicial ou obrigação legal expressa.</p>
-
-              <h3>5. Por quanto tempo os dados faciais são retidos</h3>
-              <ul>
-                <li>A fotografia é mantida enquanto durar o seu vínculo ou a sua autorização de acesso ao local.</li>
-                <li>
-                  Encerrado o vínculo — por desligamento, saída, cancelamento do cadastro ou expiração da autorização de visita — ou solicitada a exclusão por você, a imagem é
-                  <strong> eliminada em até 5 (cinco) dias corridos</strong>, tanto dos nossos servidores de armazenamento quanto dos equipamentos de controle de acesso.
-                </li>
-                <li>Caso você substitua a sua fotografia por outra, a imagem anterior é apagada imediatamente do armazenamento no momento da substituição.</li>
-                <li>A exclusão abrange o arquivo de imagem armazenado e a referência correspondente no nosso banco de dados.</li>
-              </ul>
-
-              <h3>6. Consentimento, recusa e seus direitos</h3>
-              <ul>
-                <li>
-                  A captura só ocorre depois que você autoriza expressamente o acesso à câmera pelo sistema operacional do dispositivo e confirma o envio da fotografia. Nenhuma
-                  imagem é capturada em segundo plano ou sem a sua ação direta.
-                </li>
-                <li>
-                  Você pode recusar o fornecimento da fotografia. Nesse caso, a identificação por reconhecimento facial não estará disponível, e a organização responsável pelo
-                  local poderá oferecer meios alternativos de acesso.
-                </li>
-                <li>
-                  Você pode revogar o consentimento e solicitar a exclusão dos seus dados faciais a qualquer momento, sem custo, pelo próprio aplicativo ou pelo e-mail{' '}
-                  <a href="mailto:gesec@gesec.com.br?subject=Solicitação%20de%20Exclusão%20de%20Dados%20Faciais">gesec@gesec.com.br</a>.
-                </li>
-                <li>No caso de menores de idade, a fotografia só é coletada mediante consentimento de pelo menos um dos pais ou do responsável legal.</li>
-              </ul>
-              <p>
-                O tratamento de dados faciais, na qualidade de dado pessoal sensível biométrico, observa a Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018), tendo como
-                base legal o consentimento específico e destacado do titular, nos termos do artigo 11, inciso I.
-              </p>
-            </section>
-
-            <section id="section-data" ref={(ref) => addSectionRef('section-data', ref)} className="prose dark:prose-invert mb-8">
-              <ItemTitle className="text-2xl">Retenção e Compartilhamento</ItemTitle>
-              <p>
-                Apenas retemos as informações coletadas pelo tempo necessário para fornecer o serviço solicitado. Quando armazenamos dados, protegemos dentro de meios
-                comercialmente aceitáveis para evitar perdas e roubos, bem como acesso, divulgação, cópia, uso ou modificação não autorizados.
-              </p>
-              <p>Não compartilhamos informações de identificação pessoal publicamente ou com terceiros, exceto quando exigido por lei.</p>
-              <p>
-                O nosso site pode ter links para sites externos que não são operados por nós. Esteja ciente de que não temos controle sobre o conteúdo e práticas desses sites e não
-                podemos aceitar responsabilidade por suas respectivas políticas de privacidade.
-              </p>
-            </section>
-
-            <section id="section-rights" ref={(ref) => addSectionRef('section-rights', ref)} className="prose dark:prose-invert mb-8">
-              <ItemTitle className="text-2xl">Seus Direitos</ItemTitle>
-              <p>Você é livre para recusar a nossa solicitação de informações pessoais, entendendo que talvez não possamos fornecer alguns dos serviços desejados.</p>
-              <p>
-                O uso continuado de nosso site será considerado como aceitação de nossas práticas em torno de privacidade e informações pessoais. Se você tiver alguma dúvida sobre
-                como lidamos com dados do usuário e informações pessoais, entre em contato conosco.
-              </p>
-            </section>
-
-            <section id="section-adsense" ref={(ref) => addSectionRef('section-adsense', ref)} className="prose dark:prose-invert mb-8">
-              <ItemTitle className="text-2xl">Google AdSense</ItemTitle>
-              <p>
-                O serviço Google AdSense que usamos para veicular publicidade usa um cookie DoubleClick para veicular anúncios mais relevantes em toda a Web e limitar o número de
-                vezes que um determinado anúncio é exibido para você. Para mais informações, consulte as FAQs oficiais sobre privacidade do Google AdSense.
-              </p>
-              <p>
-                Utilizamos anúncios para compensar os custos de funcionamento deste site e fornecer financiamento para futuros desenvolvimentos. Os cookies de publicidade
-                comportamental usados por este site foram projetados para garantir que você forneça os anúncios mais relevantes sempre que possível.
-              </p>
-              <p>
-                Vários parceiros anunciam em nosso nome e os cookies de rastreamento de afiliados simplesmente nos permitem ver se nossos clientes acessaram o site através de um
-                dos sites de nossos parceiros, para que possamos creditá-los adequadamente e, quando aplicável, permitir que nossos parceiros afiliados ofereçam promoções.
-              </p>
-            </section>
-
-            <section id="section-commitment" ref={(ref) => addSectionRef('section-commitment', ref)} className="prose dark:prose-invert mb-8">
-              <ItemTitle className="text-2xl">Compromisso do Usuário</ItemTitle>
-              <p>O usuário se compromete a fazer uso adequado dos conteúdos e da informação que a Gesec oferece:</p>
-              <ul>
-                <li>Não se envolver em atividades ilegais ou contrárias à boa fé e à ordem pública;</li>
-                <li>Não difundir propaganda ou conteúdo de natureza racista, xenofóbica, pornografia ilegal, apologia ao terrorismo ou contra os direitos humanos;</li>
-                <li>
-                  Não causar danos aos sistemas físicos e lógicos do Gesec, de seus fornecedores ou terceiros, para introduzir ou disseminar vírus informáticos ou quaisquer outros
-                  sistemas capazes de causar danos.
-                </li>
-              </ul>
-            </section>
-
-            <section id="section-terms" ref={(ref) => addSectionRef('section-terms', ref)} className="prose dark:prose-invert mb-8">
-              <ItemTitle className="text-2xl">Termos de Serviço</ItemTitle>
-              <p>
-                Ao acessar ao site Gesec, concorda em cumprir estes termos de serviço, todas as leis e regulamentos aplicáveis e concorda que é responsável pelo cumprimento de
-                todas as leis locais aplicáveis. Se você não concordar com algum desses termos, está proibido de usar ou acessar este site.
-              </p>
-              <p>
-                É concedida permissão para baixar temporariamente uma cópia dos materiais no site Gesec, apenas para visualização transitória pessoal e não comercial. Esta é a
-                concessão de uma licença, não uma transferência de título. Sob esta licença, você não pode:
-              </p>
-              <ul>
-                <li>Modificar ou copiar os materiais;</li>
-                <li>Usar os materiais para qualquer finalidade comercial ou para exibição pública;</li>
-                <li>Tentar descompilar ou fazer engenharia reversa de qualquer software;</li>
-                <li>Remover quaisquer direitos autorais ou outras notações de propriedade;</li>
-                <li>Transferir os materiais para outra pessoa ou espelhar em qualquer outro servidor.</li>
-              </ul>
-            </section>
-
-            <section id="section-legal" ref={(ref) => addSectionRef('section-legal', ref)} className="prose dark:prose-invert mb-8">
-              <ItemTitle className="text-2xl">Limitações e Lei Aplicável</ItemTitle>
-              <p>
-                Os materiais no site da Gesec são fornecidos &ldquo;como estão&rdquo;. Gesec não oferece garantias, expressas ou implícitas, e por este meio isenta e nega todas as
-                outras garantias, incluindo garantias implícitas ou condições de comercialização, adequação a um fim específico ou não violação de propriedade intelectual.
-              </p>
-              <p>
-                Em nenhum caso a Gesec ou seus fornecedores serão responsáveis por quaisquer danos decorrentes do uso ou da incapacidade de usar os materiais em Gesec, mesmo que
-                tenha sido notificado da possibilidade de tais danos.
-              </p>
-              <p>
-                A Gesec pode revisar estes termos de serviço a qualquer momento, sem aviso prévio. Estes termos são regidos e interpretados de acordo com as leis da Gesec e você se
-                submete irrevogavelmente à jurisdição exclusiva dos tribunais naquele estado ou localidade.
-              </p>
-            </section>
+            {sections.map(({ id, heading, body }) => (
+              <section key={id} id={id} ref={(ref) => addSectionRef(id, ref)} className="prose dark:prose-invert mb-8">
+                <ItemTitle className="text-2xl">{heading[locale]}</ItemTitle>
+                {body[locale]}
+              </section>
+            ))}
 
             <section id="section-actions" ref={(ref) => addSectionRef('section-actions', ref)} className="mt-16 border-t pt-8">
-              <h2 className="mb-8 font-medium text-2xl">Exclusão de Dados</h2>
+              <h2 className="mb-8 font-medium text-2xl">{t.deletionHeading}</h2>
               <div className="space-y-6">
-                <div className="border-border border-b pb-6">
-                  <div className="flex flex-col gap-4 md:flex-row md:items-start">
-                    <div className="md:w-2/3">
-                      <div className="mb-2 flex items-center gap-3">
-                        <ScanFace className="size-5 text-blue-700" />
-                        <h3 className="font-medium text-lg">Solicitar Exclusão de Dados Faciais</h3>
+                {deletionCards.map(({ icon: Icon, title, description, subject }) => (
+                  <div key={title.en} className="border-border border-b pb-6 last:border-b-0">
+                    <div className="flex flex-col gap-4 md:flex-row md:items-start">
+                      <div className="md:w-2/3">
+                        <div className="mb-2 flex items-center gap-3">
+                          <Icon className="size-5 text-blue-700" />
+                          <h3 className="font-medium text-lg">{title[locale]}</h3>
+                        </div>
+                        <p className="text-muted-foreground text-sm leading-relaxed">{description[locale]}</p>
                       </div>
-                      <p className="text-muted-foreground text-sm leading-relaxed">
-                        Revogue o consentimento e solicite a exclusão da sua fotografia facial dos nossos servidores e dos equipamentos de controle de acesso, em até 5 dias
-                        corridos.
-                      </p>
-                    </div>
-                    <div className="md:w-1/3 md:text-right">
-                      <Button variant="outline" asChild>
-                        <a href="mailto:gesec@gesec.com.br?subject=Solicitação%20de%20Exclusão%20de%20Dados%20Faciais">
-                          <Mail className="size-4" />
-                          Solicitar Exclusão
-                        </a>
-                      </Button>
+                      <div className="md:w-1/3 md:text-right">
+                        <Button variant="outline" asChild>
+                          <a href={`mailto:${DELETION_EMAIL}?subject=${encodeURIComponent(subject[locale])}`}>
+                            <Mail className="size-4" />
+                            {t.cta}
+                          </a>
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="border-border border-b pb-6">
-                  <div className="flex flex-col gap-4 md:flex-row md:items-start">
-                    <div className="md:w-2/3">
-                      <div className="mb-2 flex items-center gap-3">
-                        <Shield className="size-5 text-blue-700" />
-                        <h3 className="font-medium text-lg">Solicitar Exclusão de Conta</h3>
-                      </div>
-                      <p className="text-muted-foreground text-sm leading-relaxed">Solicite a exclusão permanente de sua conta e todos os dados associados.</p>
-                    </div>
-                    <div className="md:w-1/3 md:text-right">
-                      <Button variant="outline" asChild>
-                        <a href="mailto:gesec@gesec.com.br?subject=Solicitação%20de%20Exclusão%20de%20Conta">
-                          <Mail className="size-4" />
-                          Solicitar Exclusão
-                        </a>
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-                <div className="border-border border-b pb-6 last:border-b-0">
-                  <div className="flex flex-col gap-4 md:flex-row md:items-start">
-                    <div className="md:w-2/3">
-                      <div className="mb-2 flex items-center gap-3">
-                        <Shield className="size-5 text-blue-700" />
-                        <h3 className="font-medium text-lg">Solicitar Exclusão de Dados</h3>
-                      </div>
-                      <p className="text-muted-foreground text-sm leading-relaxed">Solicite a exclusão dos seus dados enquanto mantém sua conta ativa.</p>
-                    </div>
-                    <div className="md:w-1/3 md:text-right">
-                      <Button variant="outline" asChild>
-                        <a href="mailto:gesec@gesec.com.br?subject=Solicitação%20de%20Exclusão%20de%20Dados">
-                          <Mail className="size-4" />
-                          Solicitar Exclusão
-                        </a>
-                      </Button>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </section>
           </div>
@@ -340,11 +678,11 @@ function PrivacyPolicyPage() {
           <div className="sticky top-8 hidden h-fit lg:block">
             <span className="flex items-center gap-2 text-sm">
               <AlignLeft className="size-4" />
-              Nesta página
+              {t.onThisPage}
             </span>
             <nav className="mt-2 text-sm">
               <ul>
-                {tocSections.map(({ id, label }) => (
+                {tocEntries.map(({ id, label }) => (
                   <li key={id}>
                     <a
                       href={`#${id}`}

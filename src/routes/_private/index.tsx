@@ -100,7 +100,7 @@ function DashboardPage() {
     <Card className="min-h-screen rounded-none border-none">
       <CardHeader>
         <CardTitle>
-          <img src="/images/logo.png" alt="Gesec Logo" className="h-12 w-auto object-contain" />
+          <img src="/images/logo.svg" alt="Gesec Logo" className="h-12 w-auto object-contain" />
         </CardTitle>
         <CardAction>
           <UserAvatarMenu badgeStatus={badgeStatus} />

@@ -36,12 +36,18 @@ npx cap open android
 pnpm run assets:generate
 ```
 
-> O fundo é **escuro (`#0f172a`)**, não branco. A logo da Replas tem o texto em
-> branco puro — sobre fundo claro o nome "Replas" desaparece e sobra só o símbolo.
+> Fonte única: **`public/images/logo.svg`** (símbolo da Replas, `#00AEEF`, sem
+> o nome). O script roda `scripts/prepare-assets.sh`, que deriva dele os
+> arquivos de `assets/` — não edite `assets/` à mão. Para trocar a logo,
+> substitua `public/images/logo.svg`. Detalhes em
+> [REBRANDING.md](./REBRANDING.md#gerar-ícones-e-splash).
 >
-> O script embute esse fundo e, ao final, move `icons/` para `public/icons/`.
-> O `@capacitor/assets` escreve os ícones PWA em `icons/` na raiz, que o Vite não
-> copia para `dist/` — sem esse passo os 7 ícones do manifest voltam a dar 404.
+> Fundo de ícones e splash: `#0f172a`. Ao final o script move `icons/` para
+> `public/icons/`: o `@capacitor/assets` escreve os ícones PWA em `icons/` na
+> raiz, que o Vite não copia para `dist/` — sem esse passo os 7 ícones do
+> manifest voltam a dar 404.
+
+Depois rode `npx cap sync`.
 
 ### Capgo Native Builds (Cloud)
 
