@@ -31,7 +31,7 @@ const chrome: Localized<{
   en: {
     title: 'Privacy Policy',
     subtitle: 'Your privacy matters to us. Learn how we handle your personal data.',
-    dates: 'Effective as of October 30, 2023 · Last updated on September 29, 2026',
+    dates: 'Effective as of October 30, 2023 · Last updated on October 10, 2026',
     onThisPage: 'On this page',
     switchLabel: 'Ver em português',
     deletionHeading: 'Data Deletion',
@@ -41,7 +41,7 @@ const chrome: Localized<{
   pt: {
     title: 'Política de Privacidade',
     subtitle: 'A sua privacidade é importante para nós. Conheça como tratamos seus dados pessoais.',
-    dates: 'Efetiva a partir de 30 de outubro de 2023 · Última atualização em 29 de setembro de 2026',
+    dates: 'Efetiva a partir de 30 de outubro de 2023 · Última atualização em 10 de outubro de 2026',
     onThisPage: 'Nesta página',
     switchLabel: 'View in English',
     deletionHeading: 'Exclusão de Dados',
@@ -68,8 +68,12 @@ const sections: Section[] = [
       en: (
         <>
           <p>
-            Your privacy matters to us. It is Gesec&rsquo;s policy to respect your privacy regarding any information we may collect on the Gesec site and other sites we own and
-            operate.
+            Your privacy matters to us. It is Gesec&rsquo;s policy to respect your privacy regarding any information we may collect through the Gesec app, the Gesec site and other
+            sites we own and operate. The app is an access-management tool for condominiums, buildings and other controlled venues: it registers residents, dependents, visitors and
+            service providers so that they can be identified by the venue&rsquo;s physical access-control equipment.
+          </p>
+          <p>
+            <strong>The app contains no advertising</strong>, uses no advertising or tracking SDKs, and does not sell or share personal data for advertising or marketing purposes.
           </p>
           <p>
             We only request personal information when we genuinely need it to provide you with a service. We do so by fair and lawful means, with your knowledge and consent. We
@@ -80,8 +84,14 @@ const sections: Section[] = [
       pt: (
         <>
           <p>
-            A sua privacidade é importante para nós. É política da Gesec respeitar a sua privacidade em relação a qualquer informação sua que possamos coletar no site Gesec, e
-            outros sites que possuímos e operamos.
+            A sua privacidade é importante para nós. É política da Gesec respeitar a sua privacidade em relação a qualquer informação sua que possamos coletar pelo aplicativo
+            Gesec, pelo site Gesec e por outros sites que possuímos e operamos. O aplicativo é uma ferramenta de gestão de acesso para condomínios, edifícios e outros locais
+            controlados: ele cadastra moradores, dependentes, visitantes e prestadores de serviço para que sejam identificados pelos equipamentos físicos de controle de acesso do
+            local.
+          </p>
+          <p>
+            <strong>O aplicativo não contém publicidade</strong>, não utiliza SDKs de publicidade ou rastreamento e não vende nem compartilha dados pessoais para fins de
+            publicidade ou marketing.
           </p>
           <p>
             Solicitamos informações pessoais apenas quando realmente precisamos delas para lhe fornecer um serviço. Fazemo-lo por meios justos e legais, com o seu conhecimento e
@@ -136,6 +146,11 @@ const sections: Section[] = [
           <p>
             The photograph is <strong>not</strong> used for filters, avatars, visual effects, advertising, behavioral profiling, emotion or demographic analysis, nor to train
             artificial intelligence or machine learning models.
+          </p>
+          <p>
+            The app <strong>does not use face data for authentication</strong>: signing in to the app is done with your credentials, never with your face, and the app itself
+            performs no facial comparison or recognition. Face data is <strong>not used to build user profiles</strong>, to track you, or to identify anonymous persons, and it is
+            not combined with other data for any purpose other than the access-control function described above.
           </p>
 
           <h3>3. Where face data is stored</h3>
@@ -200,8 +215,19 @@ const sections: Section[] = [
               offer alternative means of access.
             </li>
             <li>
-              You may withdraw your consent and request deletion of your face data at any time, free of charge, within the app itself or by e-mail at{' '}
-              <a href={`mailto:${DELETION_EMAIL}?subject=${encodeURIComponent('Face Data Deletion Request')}`}>{DELETION_EMAIL}</a>.
+              You may withdraw your consent and delete your face data at any time, free of charge:
+              <ul>
+                <li>
+                  <strong>In the app:</strong> open <em>My Registration</em> (&ldquo;Meu Cadastro&rdquo;), tap the trash icon and confirm &ldquo;Delete account&rdquo;
+                  (&ldquo;Excluir conta&rdquo;). This permanently deletes your account, your facial photograph and all associated data from our database and storage, and removes
+                  your record from the venue&rsquo;s access-control equipment.
+                </li>
+                <li>
+                  <strong>By e-mail</strong>, if you want to delete only the facial photograph and keep your account: write to{' '}
+                  <a href={`mailto:${DELETION_EMAIL}?subject=${encodeURIComponent('Face Data Deletion Request')}`}>{DELETION_EMAIL}</a>.
+                </li>
+              </ul>
+              Once consent is withdrawn, we and every party listed in section 4 promptly stop all use of your face data.
             </li>
             <li>For minors, the photograph is only collected with the consent of at least one parent or legal guardian.</li>
           </ul>
@@ -251,6 +277,11 @@ const sections: Section[] = [
           <p>
             A fotografia <strong>não</strong> é utilizada para filtros, avatares, efeitos visuais, publicidade, perfilamento comportamental, análise de emoções ou características
             demográficas, nem para treinar modelos de inteligência artificial ou aprendizado de máquina.
+          </p>
+          <p>
+            O aplicativo <strong>não utiliza dados faciais para autenticação</strong>: o login no aplicativo é feito com suas credenciais, nunca com o seu rosto, e o próprio
+            aplicativo não realiza nenhuma comparação ou reconhecimento facial. Os dados faciais <strong>não são usados para construir perfis de usuário</strong>, para rastrear
+            você ou para identificar pessoas anônimas, e não são combinados com outros dados para nenhuma finalidade além da função de controle de acesso descrita acima.
           </p>
 
           <h3>3. Onde os dados faciais são armazenados</h3>
@@ -316,8 +347,19 @@ const sections: Section[] = [
               poderá oferecer meios alternativos de acesso.
             </li>
             <li>
-              Você pode revogar o consentimento e solicitar a exclusão dos seus dados faciais a qualquer momento, sem custo, pelo próprio aplicativo ou pelo e-mail{' '}
-              <a href={`mailto:${DELETION_EMAIL}?subject=${encodeURIComponent('Solicitação de Exclusão de Dados Faciais')}`}>{DELETION_EMAIL}</a>.
+              Você pode revogar o consentimento e excluir os seus dados faciais a qualquer momento, sem custo:
+              <ul>
+                <li>
+                  <strong>No aplicativo:</strong> abra <em>Meu Cadastro</em>, toque no ícone de lixeira e confirme &ldquo;Excluir conta&rdquo;. Isso exclui permanentemente a sua
+                  conta, a sua fotografia facial e todos os dados associados do nosso banco de dados e armazenamento, e remove o seu cadastro dos equipamentos de controle de acesso
+                  do local.
+                </li>
+                <li>
+                  <strong>Por e-mail</strong>, se quiser excluir apenas a fotografia facial e manter a conta: escreva para{' '}
+                  <a href={`mailto:${DELETION_EMAIL}?subject=${encodeURIComponent('Solicitação de Exclusão de Dados Faciais')}`}>{DELETION_EMAIL}</a>.
+                </li>
+              </ul>
+              Revogado o consentimento, nós e todas as partes listadas na seção 4 cessamos prontamente qualquer uso dos seus dados faciais.
             </li>
             <li>No caso de menores de idade, a fotografia só é coletada mediante consentimento de pelo menos um dos pais ou do responsável legal.</li>
           </ul>
@@ -340,7 +382,15 @@ const sections: Section[] = [
             We retain the information we collect only for as long as necessary to provide the requested service. When we store data, we protect it within commercially acceptable
             means to prevent loss and theft, as well as unauthorized access, disclosure, copying, use or modification.
           </p>
-          <p>We do not share personally identifiable information publicly or with third parties, except when required by law.</p>
+          <p>
+            We do not share personally identifiable information publicly. Your registration data is shared only with the organization that administers the venue you access, with
+            that venue&rsquo;s access-control equipment and with the infrastructure providers that host our servers, under the same conditions and protections described for face
+            data in the &ldquo;Face Data&rdquo; section, or when required by law.
+          </p>
+          <p>
+            If a security incident compromises personal data collected through the app, we will notify the affected users and the competent authorities, as required by applicable
+            law, including by e-mail to the address registered in your account.
+          </p>
           <p>
             Our site may contain links to external sites that we do not operate. Please be aware that we have no control over the content and practices of those sites and cannot
             accept responsibility for their respective privacy policies.
@@ -353,7 +403,15 @@ const sections: Section[] = [
             Apenas retemos as informações coletadas pelo tempo necessário para fornecer o serviço solicitado. Quando armazenamos dados, protegemos dentro de meios comercialmente
             aceitáveis para evitar perdas e roubos, bem como acesso, divulgação, cópia, uso ou modificação não autorizados.
           </p>
-          <p>Não compartilhamos informações de identificação pessoal publicamente ou com terceiros, exceto quando exigido por lei.</p>
+          <p>
+            Não divulgamos informações de identificação pessoal publicamente. Os seus dados cadastrais são compartilhados apenas com a organização que administra o local que você
+            acessa, com os equipamentos de controle de acesso desse local e com os provedores de infraestrutura que hospedam nossos servidores, nas mesmas condições e com as mesmas
+            proteções descritas para dados faciais na seção &ldquo;Dados Faciais&rdquo;, ou quando exigido por lei.
+          </p>
+          <p>
+            Caso um incidente de segurança comprometa dados pessoais coletados pelo aplicativo, notificaremos os usuários afetados e as autoridades competentes, conforme exigido
+            pela legislação aplicável, inclusive por e-mail para o endereço cadastrado na sua conta.
+          </p>
           <p>
             O nosso site pode ter links para sites externos que não são operados por nós. Esteja ciente de que não temos controle sobre o conteúdo e práticas desses sites e não
             podemos aceitar responsabilidade por suas respectivas políticas de privacidade.
@@ -371,8 +429,10 @@ const sections: Section[] = [
         <>
           <p>You are free to refuse our request for personal information, with the understanding that we may not be able to provide some of the services you want.</p>
           <p>
-            Continued use of our site will be regarded as acceptance of our practices around privacy and personal information. If you have any question about how we handle user
-            data and personal information, please contact us.
+            Face data is only collected with your explicit consent, given at the moment of capture, as described in the &ldquo;Face Data&rdquo; section; it is never inferred from
+            continued use of the app or site. You may delete your account and all associated data at any time in the app, under <em>My Registration</em> (&ldquo;Meu
+            Cadastro&rdquo;). If you have any question about how we handle user data and personal information, contact us at{' '}
+            <a href={`mailto:${DELETION_EMAIL}`}>{DELETION_EMAIL}</a>.
           </p>
         </>
       ),
@@ -380,47 +440,10 @@ const sections: Section[] = [
         <>
           <p>Você é livre para recusar a nossa solicitação de informações pessoais, entendendo que talvez não possamos fornecer alguns dos serviços desejados.</p>
           <p>
-            O uso continuado de nosso site será considerado como aceitação de nossas práticas em torno de privacidade e informações pessoais. Se você tiver alguma dúvida sobre como
-            lidamos com dados do usuário e informações pessoais, entre em contato conosco.
-          </p>
-        </>
-      ),
-    },
-  },
-  {
-    id: 'section-adsense',
-    toc: { en: 'Google AdSense', pt: 'Google AdSense' },
-    heading: { en: 'Google AdSense', pt: 'Google AdSense' },
-    body: {
-      en: (
-        <>
-          <p>
-            The Google AdSense service we use to serve advertising uses a DoubleClick cookie to serve more relevant ads across the web and to limit the number of times a given ad
-            is shown to you. For more information, see the official Google AdSense privacy FAQs.
-          </p>
-          <p>
-            We use advertising to offset the running costs of this site and to fund future development. The behavioral advertising cookies used by this site are designed to ensure
-            you are served the most relevant ads wherever possible.
-          </p>
-          <p>
-            Several partners advertise on our behalf, and affiliate tracking cookies simply allow us to see whether our customers reached the site through one of our partner sites,
-            so that we can credit them appropriately and, where applicable, allow our affiliate partners to offer promotions.
-          </p>
-        </>
-      ),
-      pt: (
-        <>
-          <p>
-            O serviço Google AdSense que usamos para veicular publicidade usa um cookie DoubleClick para veicular anúncios mais relevantes em toda a Web e limitar o número de vezes
-            que um determinado anúncio é exibido para você. Para mais informações, consulte as FAQs oficiais sobre privacidade do Google AdSense.
-          </p>
-          <p>
-            Utilizamos anúncios para compensar os custos de funcionamento deste site e fornecer financiamento para futuros desenvolvimentos. Os cookies de publicidade
-            comportamental usados por este site foram projetados para garantir que você forneça os anúncios mais relevantes sempre que possível.
-          </p>
-          <p>
-            Vários parceiros anunciam em nosso nome e os cookies de rastreamento de afiliados simplesmente nos permitem ver se nossos clientes acessaram o site através de um dos
-            sites de nossos parceiros, para que possamos creditá-los adequadamente e, quando aplicável, permitir que nossos parceiros afiliados ofereçam promoções.
+            Dados faciais só são coletados com o seu consentimento explícito, dado no momento da captura, conforme descrito na seção &ldquo;Dados Faciais&rdquo;; esse consentimento
+            nunca é presumido pelo uso continuado do aplicativo ou do site. Você pode excluir a sua conta e todos os dados associados a qualquer momento pelo aplicativo, em{' '}
+            <em>Meu Cadastro</em>. Se tiver alguma dúvida sobre como lidamos com dados do usuário e informações pessoais, entre em contato pelo e-mail{' '}
+            <a href={`mailto:${DELETION_EMAIL}`}>{DELETION_EMAIL}</a>.
           </p>
         </>
       ),
@@ -564,8 +587,8 @@ const deletionCards: {
     icon: Shield,
     title: { en: 'Request Account Deletion', pt: 'Solicitar Exclusão de Conta' },
     description: {
-      en: 'Request permanent deletion of your account and all associated data.',
-      pt: 'Solicite a exclusão permanente de sua conta e todos os dados associados.',
+      en: 'Permanently delete your account, facial photograph and all associated data. You can also do this directly in the app, under My Registration (Meu Cadastro) > trash icon.',
+      pt: 'Exclua permanentemente sua conta, sua fotografia facial e todos os dados associados. Você também pode fazer isso direto no aplicativo, em Meu Cadastro > ícone de lixeira.',
     },
     subject: { en: 'Account Deletion Request', pt: 'Solicitação de Exclusão de Conta' },
   },
